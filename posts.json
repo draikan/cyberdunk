@@ -1,22 +1,21 @@
 {
   "title": "Infos utiles",
-  "subtitle": "Les nouvelles et liens à partager avec mes proches",
+  "subtitle": "Les nouvelles et liens à partager seront listés ci dessous",
   "posts": [
     {
-      "id": "bienvenue",
+      "id": "mwlh35n1m3kl",
       "type": "text",
-      "title": "Bienvenue !",
-      "content": "Ce site regroupe les infos et liens utiles que je veux partager avec vous.\nRevenez de temps en temps, je l'alimente régulièrement.",
-      "date": "2026-11-18",
+      "title": "Régional varsovie day 1",
+      "content": "Main event: main + \nFlatlined revival\nhttps://melee.gg/Tournament/View/482476\n\nStreetkid : \nscénario 1\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n+\nON-DEMAND PODS\n+\nhttps://melee.gg/Tournament/View/482476\n\nscénario 2\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nsunset win a mat - potentiellement drop ou concede la dernière game\nhttps://melee.gg/Tournament/View/482475\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476\n\nscénario 3\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nchroming up sealed - potentiellement drop ou concede après la première/1eme game\nhttps://melee.gg/Tournament/View/482482\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476",
+      "date": "2027-01-30",
       "pinned": true
     },
     {
-      "id": "exemple-lien",
-      "type": "link",
-      "title": "Exemple de lien utile",
-      "url": "https://www.service-public.fr",
-      "content": "Le site officiel de l'administration française.",
-      "date": "2026-11-18",
+      "id": "mwlgwz5te51o",
+      "type": "text",
+      "title": "Main event - day 2 fail / streetkid dimanche",
+      "content": "scénario 1\nGORO TAKEMURA OPEN 1\nhttps://melee.gg/Tournament/View/482469\n\nscénario 2\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME pour sunset win a mat\nhttps://melee.gg/Tournament/View/482469\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473\n\nscénario 3\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME 4\nhttps://melee.gg/Tournament/View/482469\n\nFlatlined Revival (2/2) - DROP OU CONCEED dernière GAME\nhttps://melee.gg/Tournament/View/482478\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473",
+      "date": "2027-01-31",
       "pinned": false
     }
   ],
