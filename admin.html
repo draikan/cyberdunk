@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Administration</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <h1>Administration</h1>
+  <p class="muted"><a href="./">← Voir le site</a> · <span id="dirty-flag"></span></p>
+</header>
+
+<main class="wrap" id="main">
+  <div id="status" class="status"></div>
+
+  <!-- Connexion GitHub -->
+  <section class="panel">
+    <details id="cfg-box">
+      <summary>⚙️ Connexion GitHub <span id="cfg-state" class="muted"></span></summary>
+      <label>Propriétaire (ton pseudo GitHub)</label>
+      <input type="text" id="cfg-owner" placeholder="ex. moni">
+      <label>Nom du dépôt</label>
+      <input type="text" id="cfg-repo" placeholder="ex. infos-proches">
+      <label>Branche</label>
+      <input type="text" id="cfg-branch" value="main">
+      <label>Jeton d'accès GitHub (fine-grained, droit « Contents : Read and write » sur ce dépôt)</label>
+      <input type="password" id="cfg-token" placeholder="github_pat_…" autocomplete="off">
+      <p class="muted small" style="padding:6px 0 0">Le jeton reste uniquement dans ce navigateur. Il n'est jamais écrit dans le dépôt.</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="cfg-save">Enregistrer et charger</button>
+        <button class="btn ghost" id="cfg-forget">Oublier le jeton</button>
+      </div>
+    </details>
+  </section>
+
+  <!-- Publication -->
+  <section class="panel row">
+    <button class="btn" id="publish" style="flex:2">🚀 Publier sur le site</button>
+    <button class="btn ghost" id="download">Télécharger posts.json</button>
+  </section>
+
+  <div class="filters">
+    <div class="seg" id="view-seg">
+      <button data-view="posts" class="on">📝 Posts</button>
+      <button data-view="plans">📅 Plannings</button>
+    </div>
+  </div>
+
+  <!-- ================= POSTS ================= -->
+  <div id="view-posts">
+    <section class="panel">
+      <h2>Titre du site</h2>
+      <div class="row">
+        <div><label>Titre</label><input type="text" id="site-title"></div>
+        <div><label>Sous-titre</label><input type="text" id="site-subtitle"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="editor">
+      <h2 id="editor-title">Nouveau bloc</h2>
+      <div class="seg" id="type-seg">
+        <button data-type="text" class="on">💬 Texte</button>
+        <button data-type="link">🔗 Lien URL</button>
+      </div>
+      <div id="url-field" style="display:none">
+        <label>Adresse du lien</label>
+        <input type="url" id="f-url" placeholder="https://…">
+      </div>
+      <label>Titre <span class="muted">(facultatif)</span></label>
+      <input type="text" id="f-title">
+      <label id="content-label">Texte</label>
+      <textarea id="f-content" placeholder="Écris ton message… Les adresses https:// deviennent cliquables."></textarea>
+      <div class="row">
+        <div><label>Date</label><input type="date" id="f-date"></div>
+        <div><label class="inline"><input type="checkbox" id="f-pinned"> Épingler en haut</label></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="f-save">Ajouter le bloc</button>
+        <button class="btn ghost" id="f-cancel" style="display:none">Annuler la modification</button>
+      </div>
+    </section>
+
+    <h2>Blocs existants</h2>
+    <div id="list" class="posts"></div>
+  </div>
+
+  <!-- ================= PLANNINGS ================= -->
+  <div id="view-plans" hidden>
+    <section class="panel">
+      <h2>Planning</h2>
+      <label>Choisir un planning</label>
+      <select id="pl-select"></select>
+
+      <label>Nom du planning <span class="muted">(= nom de l'onglet)</span></label>
+      <input type="text" id="pl-name" placeholder="ex. EOR Chicago">
+      <div class="row">
+        <div><label>Du</label><input type="date" id="pl-start"></div>
+        <div><label>Au</label><input type="date" id="pl-end"></div>
+      </div>
+      <div class="row">
+        <div><label>Heure de début de grille</label><select id="pl-daystart"></select></div>
+        <div><label>Heure de fin de grille</label><select id="pl-dayend"></select></div>
+        <div><label>Format des heures</label>
+          <select id="pl-fmt"><option value="24h">24 h (14:30)</option><option value="12h">12 h (2:30 PM)</option></select>
+        </div>
+      </div>
+      <label>Note affichée en haut <span class="muted">(facultatif)</span></label>
+      <input type="text" id="pl-note" placeholder="ex. $(Min/Max) = Eddies available">
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="pl-save">Créer le planning</button>
+        <button class="btn danger" id="pl-del" style="display:none">Supprimer ce planning</button>
+      </div>
+    </section>
+
+    <div id="pl-work" hidden>
+      <section class="panel" id="ev-editor">
+        <h2 id="ev-editor-title">Nouvel événement</h2>
+        <label>Titre de l'événement</label>
+        <input type="text" id="ev-title" placeholder="ex. Goro Open (3/4)">
+        <label>Détails <span class="muted">(facultatif, ex. prix / dotation)</span></label>
+        <input type="text" id="ev-details" placeholder="ex. $(700/1700+mat)">
+        <div class="row">
+          <div><label>Jour</label><select id="ev-date"></select></div>
+          <div><label>Début</label><select id="ev-start"></select></div>
+          <div><label>Fin</label><select id="ev-end"></select></div>
+        </div>
+        <label>Lien de réservation</label>
+        <input type="url" id="ev-url" placeholder="https://…">
+        <label>Couleur</label>
+        <div class="row" style="flex-wrap:nowrap">
+          <label class="inline" style="flex:none;margin:0"><input type="checkbox" id="ev-auto" checked> Automatique</label>
+          <input type="color" id="ev-color" value="#a4c2f4" disabled style="flex:none">
+          <span class="muted small" style="padding:0">Auto : même nom d'event = même couleur</span>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" id="ev-save">Ajouter l'événement</button>
+          <button class="btn ghost" id="ev-cancel" style="display:none">Annuler</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Événements du planning</h2>
+        <div id="ev-list"></div>
+      </section>
+
+      <h2>Aperçu</h2>
+    </div>
+  </div>
+</main>
+<div class="wrap wide" id="pl-preview-wrap" hidden><div id="pl-preview"></div></div>
+
+<script src="common.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} }
+};
+
+let data = { title: '', subtitle: '', posts: [], plannings: [] };
+let sha = null;
+let editingId = null;
+let currentType = 'text';
+let dirty = false;
+
+/* ---------- Configuration GitHub ---------- */
+function guessRepo() {
+  const h = location.hostname;
+  if (h.endsWith('.github.io')) {
+    const owner = h.split('.')[0];
+    const seg = location.pathname.split('/').filter(Boolean)[0];
+    return { owner, repo: seg && !seg.endsWith('.html') ? seg : h };
+  }
+  return { owner: '', repo: '' };
+}
+function cfg() {
+  return {
+    owner: $('cfg-owner').value.trim(),
+    repo: $('cfg-repo').value.trim(),
+    branch: $('cfg-branch').value.trim() || 'main',
+    token: $('cfg-token').value.trim()
+  };
+}
+function loadCfg() {
+  const g = guessRepo();
+  $('cfg-owner').value = store.get('gh_owner') || g.owner;
+  $('cfg-repo').value = store.get('gh_repo') || g.repo;
+  $('cfg-branch').value = store.get('gh_branch') || 'main';
+  $('cfg-token').value = store.get('gh_token') || '';
+  const c = cfg();
+  $('cfg-state').textContent = c.token ? '— connecté' : '— non configuré';
+  if (!c.token) $('cfg-box').open = true;
+}
+$('cfg-save').onclick = () => {
+  const c = cfg();
+  store.set('gh_owner', c.owner); store.set('gh_repo', c.repo);
+  store.set('gh_branch', c.branch); store.set('gh_token', c.token);
+  loadCfg(); loadFromGitHub();
+};
+$('cfg-forget').onclick = () => { store.del('gh_token'); $('cfg-token').value = ''; loadCfg(); status('Jeton supprimé de ce navigateur.', true); };
+
+/* ---------- Utilitaires ---------- */
+function status(msg, ok) {
+  const s = $('status');
+  s.className = 'status ' + (ok ? 'ok' : 'err');
+  s.textContent = msg;
+  s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (ok) setTimeout(() => { if (s.textContent === msg) s.className = 'status'; }, 6000);
+}
+function setDirty(v) {
+  dirty = v;
+  $('dirty-flag').innerHTML = v ? '<span class="dirty">● Modifications non publiées</span>' : 'À jour';
+}
+const b64encode = s => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
+const b64decode = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), c => c.charCodeAt(0)));
+const today = () => isoDay(new Date());
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function normalize(d) {
+  d.posts = d.posts || [];
+  d.plannings = d.plannings || [];
+  d.plannings.forEach(p => p.events = p.events || []);
+  return d;
+}
+
+/* ---------- GitHub ---------- */
+async function gh(method, body) {
+  const c = cfg();
+  const url = `https://api.github.com/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/contents/posts.json` +
+              (method === 'GET' ? `?ref=${encodeURIComponent(c.branch)}` : '');
+  const r = await fetch(url, {
+    method,
+    headers: { Authorization: `Bearer ${c.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+    cache: 'no-store'
+  });
+  if (!r.ok) {
+    const t = await r.json().catch(() => ({}));
+    throw new Error(`${r.status} — ${t.message || 'erreur GitHub'}`);
+  }
+  return r.json();
+}
+async function loadFromGitHub() {
+  const c = cfg();
+  if (!c.token || !c.owner || !c.repo) return loadLocal();
+  try {
+    const f = await gh('GET');
+    sha = f.sha;
+    data = normalize(JSON.parse(b64decode(f.content)));
+    fillAll(); setDirty(false);
+    status('Contenu chargé depuis GitHub.', true);
+  } catch (e) {
+    status('Lecture GitHub impossible : ' + e.message + '. Vérifie le pseudo, le dépôt et le jeton.');
+    loadLocal();
+  }
+}
+async function loadLocal() {
+  try { data = normalize(await (await fetch('posts.json?t=' + Date.now())).json()); } catch { normalize(data); }
+  fillAll(); setDirty(false);
+}
+
+$('publish').onclick = async () => {
+  const c = cfg();
+  if (!c.token) { $('cfg-box').open = true; return status('Configure d\'abord la connexion GitHub (en haut).'); }
+  readSiteFields();
+  $('publish').disabled = true; $('publish').textContent = 'Publication…';
+  try {
+    try { sha = (await gh('GET')).sha; } catch { sha = null; }
+    const res = await gh('PUT', {
+      message: 'Mise à jour du contenu',
+      content: b64encode(JSON.stringify(data, null, 2) + '\n'),
+      branch: c.branch,
+      ...(sha ? { sha } : {})
+    });
+    sha = res.content.sha;
+    setDirty(false);
+    status('Publié ✔ Le site sera à jour d\'ici une à deux minutes.', true);
+  } catch (e) {
+    status('Échec de la publication : ' + e.message);
+  } finally {
+    $('publish').disabled = false; $('publish').textContent = '🚀 Publier sur le site';
+  }
+};
+$('download').onclick = () => {
+  readSiteFields();
+  const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'posts.json'; a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+/* ---------- Bascule Posts / Plannings ---------- */
+function showView(v) {
+  document.querySelectorAll('#view-seg button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
+  $('view-posts').hidden = v !== 'posts';
+  $('view-plans').hidden = v !== 'plans';
+  renderPlanningAdmin();
+}
+document.querySelectorAll('#view-seg button').forEach(b => b.onclick = () => showView(b.dataset.view));
+
+/* =================== POSTS =================== */
+function setType(t) {
+  currentType = t;
+  document.querySelectorAll('#type-seg button').forEach(b => b.classList.toggle('on', b.dataset.type === t));
+  $('url-field').style.display = t === 'link' ? '' : 'none';
+  $('content-label').innerHTML = t === 'link' ? 'Description <span class="muted">(facultatif)</span>' : 'Texte';
+}
+document.querySelectorAll('#type-seg button').forEach(b => b.onclick = () => setType(b.dataset.type));
+
+function resetForm() {
+  editingId = null;
+  $('f-url').value = ''; $('f-title').value = ''; $('f-content').value = '';
+  $('f-date').value = today(); $('f-pinned').checked = false;
+  $('f-save').textContent = 'Ajouter le bloc';
+  $('editor-title').textContent = 'Nouveau bloc';
+  $('f-cancel').style.display = 'none';
+  setType('text');
+}
+$('f-save').onclick = () => {
+  const post = {
+    id: editingId || uid(), type: currentType,
+    title: $('f-title').value.trim(), content: $('f-content').value.trim(),
+    date: $('f-date').value || today(), pinned: $('f-pinned').checked
+  };
+  if (currentType === 'link') {
+    let u = $('f-url').value.trim();
+    if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
+    try { new URL(u); } catch { return status('Adresse du lien invalide.'); }
+    post.url = u;
+  } else if (!post.content) {
+    return status('Le texte est vide.');
+  }
+  const i = data.posts.findIndex(p => p.id === post.id);
+  if (i >= 0) data.posts[i] = post; else data.posts.unshift(post);
+  resetForm(); renderList(); setDirty(true);
+  status(i >= 0 ? 'Bloc modifié — pense à publier.' : 'Bloc ajouté — pense à publier.', true);
+};
+$('f-cancel').onclick = resetForm;
+
+function edit(id) {
+  const p = data.posts.find(x => x.id === id); if (!p) return;
+  editingId = id; setType(p.type);
+  $('f-url').value = p.url || ''; $('f-title').value = p.title || '';
+  $('f-content').value = p.content || ''; $('f-date').value = p.date || today();
+  $('f-pinned').checked = !!p.pinned;
+  $('f-save').textContent = 'Enregistrer la modification';
+  $('editor-title').textContent = 'Modifier le bloc';
+  $('f-cancel').style.display = '';
+  $('editor').scrollIntoView({ behavior: 'smooth' });
+}
+function del(id) {
+  if (!confirm('Supprimer ce bloc ?')) return;
+  data.posts = data.posts.filter(p => p.id !== id);
+  if (editingId === id) resetForm();
+  renderList(); setDirty(true);
+}
+function togglePin(id) {
+  const p = data.posts.find(x => x.id === id); if (!p) return;
+  p.pinned = !p.pinned; renderList(); setDirty(true);
+}
+function renderList() {
+  const list = sortPosts(data.posts);
+  $('list').innerHTML = list.length ? list.map(p => `
+    <div class="admin-item">
+      ${renderPost(p)}
+      <div class="admin-actions">
+        <button class="btn ghost small" onclick="edit('${p.id}')">✏️ Modifier</button>
+        <button class="btn ghost small" onclick="togglePin('${p.id}')">${p.pinned ? 'Désépingler' : '📌 Épingler'}</button>
+        <button class="btn danger small" onclick="del('${p.id}')">Supprimer</button>
+      </div>
+    </div>`).join('') : '<p class="muted center">Aucun bloc.</p>';
+}
+function readSiteFields() {
+  data.title = $('site-title').value.trim();
+  data.subtitle = $('site-subtitle').value.trim();
+}
+['site-title', 'site-subtitle'].forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+
+/* =================== PLANNINGS =================== */
+let curPl = null;      // id du planning sélectionné (null = nouveau)
+let editingEv = null;  // id de l'event en cours de modification
+
+const getPl = () => data.plannings.find(p => p.id === curPl);
+
+const hhmm = m => m >= 1440 ? '24:00' : timeLabel(m);
+function timeOptions(sel, from, to, value) {
+  let h = '';
+  for (let m = from; m <= to; m += 30) h += `<option value="${hhmm(m)}">${hhmm(m)}</option>`;
+  sel.innerHTML = h;
+  if (value) sel.value = value;
+}
+timeOptions($('pl-daystart'), 0, 1410, '09:00');
+timeOptions($('pl-dayend'), 30, 1440, '20:00');
+timeOptions($('ev-start'), 0, 1410, '10:00');
+timeOptions($('ev-end'), 30, 1440, '11:00');
+
+function renderPlSelect() {
+  $('pl-select').innerHTML = `<option value="">＋ Nouveau planning</option>` +
+    data.plannings.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  $('pl-select').value = curPl || '';
+}
+$('pl-select').onchange = () => { curPl = $('pl-select').value || null; fillPlForm(); };
+
+function fillPlForm() {
+  const p = getPl();
+  $('pl-name').value = p ? p.name : '';
+  $('pl-start').value = p ? p.startDate : today();
+  $('pl-end').value = p ? p.endDate : today();
+  $('pl-daystart').value = p ? (p.dayStart || '09:00') : '09:00';
+  $('pl-dayend').value = p ? (p.dayEnd || '20:00') : '20:00';
+  $('pl-fmt').value = p ? (p.timeFormat || '24h') : '24h';
+  $('pl-note').value = p ? (p.note || '') : '';
+  $('pl-save').textContent = p ? 'Enregistrer le planning' : 'Créer le planning';
+  $('pl-del').style.display = p ? '' : 'none';
+  resetEvForm();
+  renderPlanningAdmin();
+}
+
+$('pl-save').onclick = () => {
+  const name = $('pl-name').value.trim();
+  const s = $('pl-start').value, e = $('pl-end').value;
+  if (!name) return status('Donne un nom au planning.');
+  if (!s || !e) return status('Indique les dates de début et de fin.');
+  if (e < s) return status('La date de fin est avant la date de début.');
+  if (daysBetween(s, e).length >= 62) return status('Un planning est limité à 62 jours.');
+  if (toMin($('pl-dayend').value) <= toMin($('pl-daystart').value)) return status('L\'heure de fin de grille doit être après l\'heure de début.');
+  let p = getPl();
+  const isNew = !p;
+  if (isNew) { p = { id: uid(), events: [] }; data.plannings.push(p); curPl = p.id; }
+  Object.assign(p, {
+    name, startDate: s, endDate: e,
+    dayStart: $('pl-daystart').value, dayEnd: $('pl-dayend').value,
+    timeFormat: $('pl-fmt').value, note: $('pl-note').value.trim()
+  });
+  renderPlSelect(); fillPlForm(); setDirty(true);
+  status(isNew ? 'Planning créé — ajoute maintenant des événements.' : 'Planning enregistré — pense à publier.', true);
+};
+$('pl-del').onclick = () => {
+  const p = getPl(); if (!p) return;
+  if (!confirm(`Supprimer le planning « ${p.name} » et ses ${p.events.length} événement(s) ?`)) return;
+  data.plannings = data.plannings.filter(x => x.id !== p.id);
+  curPl = null; renderPlSelect(); fillPlForm(); setDirty(true);
+};
+
+/* ----- Événements ----- */
+function fillEvDates(value) {
+  const p = getPl(); if (!p) return;
+  const days = daysBetween(p.startDate, p.endDate);
+  $('ev-date').innerHTML = days.map(d => `<option value="${d}">${esc(dayLabel(d))}</option>`).join('');
+  if (value && days.includes(value)) $('ev-date').value = value;
+}
+$('ev-auto').onchange = () => { $('ev-color').disabled = $('ev-auto').checked; };
+$('ev-title').addEventListener('input', () => { if ($('ev-auto').checked) $('ev-color').value = autoColor($('ev-title').value); });
+$('ev-start').onchange = () => {
+  // Décale la fin pour garder la même durée minimale
+  if (toMin($('ev-end').value) <= toMin($('ev-start').value)) $('ev-end').value = hhmm(Math.min(toMin($('ev-start').value) + 60, 1440));
+};
+
+function resetEvForm(keepDate) {
+  editingEv = null;
+  const p = getPl();
+  const keep = keepDate ? $('ev-date').value : null;
+  $('ev-title').value = ''; $('ev-details').value = ''; $('ev-url').value = '';
+  $('ev-auto').checked = true; $('ev-color').disabled = true;
+  fillEvDates(keep);
+  if (p) {
+    $('ev-start').value = p.dayStart || '09:00';
+    $('ev-end').value = hhmm(Math.min(toMin($('ev-start').value) + 60, 1440));
+  }
+  $('ev-save').textContent = 'Ajouter l\'événement';
+  $('ev-editor-title').textContent = 'Nouvel événement';
+  $('ev-cancel').style.display = 'none';
+}
+$('ev-cancel').onclick = () => resetEvForm(true);
+
+$('ev-save').onclick = () => {
+  const p = getPl(); if (!p) return;
+  const ev = {
+    id: editingEv || uid(),
+    title: $('ev-title').value.trim(),
+    details: $('ev-details').value.trim(),
+    date: $('ev-date').value,
+    start: $('ev-start').value,
+    end: $('ev-end').value,
+    url: '',
+    color: $('ev-auto').checked ? '' : $('ev-color').value
+  };
+  if (!ev.title) return status('Donne un titre à l\'événement.');
+  if (!ev.date) return status('Choisis un jour.');
+  if (toMin(ev.end) <= toMin(ev.start)) return status('L\'heure de fin doit être après l\'heure de début.');
+  let u = $('ev-url').value.trim();
+  if (u) {
+    if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    try { new URL(u); } catch { return status('Lien de réservation invalide.'); }
+    ev.url = u;
+  }
+  const i = p.events.findIndex(x => x.id === ev.id);
+  if (i >= 0) p.events[i] = ev; else p.events.push(ev);
+  resetEvForm(true); renderPlanningAdmin(); setDirty(true);
+  status((i >= 0 ? 'Événement modifié' : 'Événement ajouté') + (ev.url ? '' : ' (sans lien : le bloc ne sera pas cliquable)') + ' — pense à publier.', true);
+};
+
+function editEv(id, asCopy) {
+  const p = getPl(); const ev = p && p.events.find(x => x.id === id); if (!ev) return;
+  editingEv = asCopy ? null : id;
+  $('ev-title').value = ev.title; $('ev-details').value = ev.details || '';
+  fillEvDates(ev.date);
+  $('ev-start').value = ev.start; $('ev-end').value = ev.end;
+  $('ev-url').value = ev.url || '';
+  $('ev-auto').checked = !ev.color; $('ev-color').disabled = !ev.color;
+  $('ev-color').value = evColor(ev);
+  $('ev-save').textContent = asCopy ? 'Ajouter la copie' : 'Enregistrer la modification';
+  $('ev-editor-title').textContent = asCopy ? 'Copie de l\'événement' : 'Modifier l\'événement';
+  $('ev-cancel').style.display = '';
+  $('ev-editor').scrollIntoView({ behavior: 'smooth' });
+}
+function delEv(id) {
+  const p = getPl(); if (!p) return;
+  if (!confirm('Supprimer cet événement ?')) return;
+  p.events = p.events.filter(x => x.id !== id);
+  if (editingEv === id) resetEvForm(true);
+  renderPlanningAdmin(); setDirty(true);
+}
+
+function renderPlanningAdmin() {
+  const p = getPl();
+  const onPlans = !$('view-plans').hidden;
+  $('pl-work').hidden = !p;
+  $('pl-preview-wrap').hidden = !p || !onPlans;
+  if (!p) return;
+  const days = daysBetween(p.startDate, p.endDate);
+  const fmt = p.timeFormat;
+  const sorted = [...p.events].sort((a, b) => a.date.localeCompare(b.date) || toMin(a.start) - toMin(b.start));
+  let html = '', lastDay = null;
+  for (const ev of sorted) {
+    if (ev.date !== lastDay) {
+      lastDay = ev.date;
+      html += `<h3 style="margin:14px 0 4px">${esc(isNaN(parseDay(ev.date)) ? ev.date : dayLabel(ev.date))}</h3>`;
+    }
+    const out = !days.includes(ev.date);
+    html += `<div class="ev-row">
+      <span class="swatch" style="background:${evColor(ev)}"></span>
+      <span class="ev-time">${timeLabel(toMin(ev.start), fmt)} – ${timeLabel(toMin(ev.end), fmt)}</span>
+      <span class="ev-txt"><strong>${esc(ev.title)}</strong> ${ev.details ? `<span class="muted">${esc(ev.details)}</span>` : ''}
+        ${ev.url ? '' : '<br><span class="warn">⚠ pas de lien de réservation</span>'}
+        ${out ? '<br><span class="warn">⚠ hors de la période du planning (non affiché)</span>' : ''}</span>
+      <button class="btn ghost small" onclick="editEv('${ev.id}')">✏️ Modifier</button>
+      <button class="btn ghost small" onclick="editEv('${ev.id}', true)">⧉ Dupliquer</button>
+      <button class="btn danger small" onclick="delEv('${ev.id}')">Supprimer</button>
+    </div>`;
+  }
+  $('ev-list').innerHTML = html || '<p class="muted">Aucun événement pour l\'instant.</p>';
+  $('pl-preview').innerHTML = renderPlanning(p);
+}
+
+/* ---------- Remplissage global ---------- */
+function fillAll() {
+  $('site-title').value = data.title || '';
+  $('site-subtitle').value = data.subtitle || '';
+  renderList();
+  if (curPl && !getPl()) curPl = null;
+  renderPlSelect(); fillPlForm();
+}
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- Démarrage ---------- */
+loadCfg(); resetForm(); loadFromGitHub();
+</script>
+</body>
+</html>

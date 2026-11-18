@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infos utiles</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <h1 id="site-title">Infos utiles</h1>
+  <p id="site-subtitle" class="muted">Les nouvelles et liens à partager avec mes proches</p>
+</header>
+
+<nav id="tabs" class="tabs" hidden></nav>
+
+<main>
+  <div id="view-infos" class="wrap">
+    <div class="filters">
+      <button class="chip active" data-filter="all">Tout</button>
+      <button class="chip" data-filter="text">Messages</button>
+      <button class="chip" data-filter="link">Liens</button>
+    </div>
+    <div id="posts" class="posts"><p class="muted center">Chargement…</p></div>
+  </div>
+  <div id="view-planning" class="wrap wide" hidden></div>
+</main>
+
+<footer class="muted center small">Mis à jour <span id="updated">—</span></footer>
+
+<script src="common.js"></script>
+<script>
+let all = [];
+let plannings = [];
+let filter = 'all';
+
+function renderPosts() {
+  const box = document.getElementById('posts');
+  const list = all.filter(p => filter === 'all' || p.type === filter);
+  box.innerHTML = list.length ? list.map(renderPost).join('') : '<p class="muted center">Aucun post pour le moment.</p>';
+}
+
+document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  filter = b.dataset.filter;
+  renderPosts();
+}));
+
+// Onglets : #infos ou #p-<id du planning>
+function route() {
+  const id = location.hash.startsWith('#p-') ? decodeURIComponent(location.hash.slice(3)) : null;
+  const pl = plannings.find(p => p.id === id);
+  document.getElementById('view-infos').hidden = !!pl;
+  const v = document.getElementById('view-planning');
+  v.hidden = !pl;
+  if (pl) v.innerHTML = renderPlanning(pl);
+  document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('active', a.dataset.id === (pl ? pl.id : '')));
+}
+window.addEventListener('hashchange', route);
+
+function renderTabs() {
+  const nav = document.getElementById('tabs');
+  nav.hidden = !plannings.length;
+  nav.innerHTML = `<a class="tab" href="#infos" data-id="">📰 Infos</a>` +
+    plannings.map(p => `<a class="tab" href="#p-${encodeURIComponent(p.id)}" data-id="${esc(p.id)}">📅 ${esc(p.name)}</a>`).join('');
+}
+
+fetch('posts.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    if (data.title) { document.getElementById('site-title').textContent = data.title; document.title = data.title; }
+    if (data.subtitle !== undefined) document.getElementById('site-subtitle').textContent = data.subtitle;
+    all = sortPosts(data.posts || []);
+    plannings = data.plannings || [];
+    const last = all.map(p => p.date).sort().pop();
+    document.getElementById('updated').textContent = last ? formatDate(last) : '—';
+    renderPosts(); renderTabs(); route();
+  })
+  .catch(() => {
+    document.getElementById('posts').innerHTML = '<p class="muted center">Impossible de charger le contenu.</p>';
+  });
+</script>
+</body>
+</html>
