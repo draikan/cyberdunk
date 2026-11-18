@@ -6,7 +6,7 @@
       "id": "mwlh35n1m3kl",
       "type": "text",
       "title": "Régional varsovie day 1",
-      "content": "Main event: main + \nFlatlined revival\nhttps://melee.gg/Tournament/View/482476\n\nStreetkid : \nscénario 1\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n+\nON-DEMAND PODS\n+\nhttps://melee.gg/Tournament/View/482476\n\nscénario 2\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nsunset win a mat - potentiellement drop ou concede la dernière game\nhttps://melee.gg/Tournament/View/482475\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476\n\nscénario 3\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nchroming up sealed - potentiellement drop ou concede après la première/1eme game\nhttps://melee.gg/Tournament/View/482482\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476",
+      "content": "Main event: main + \nFlatlined revival\nhttps://melee.gg/Tournament/View/482476\n-----------------------------------------------------------------------------------\n-----------------------------------------------------------------------------------\nStreetkid : \nscénario 1\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n+\nON-DEMAND PODS\n+\nhttps://melee.gg/Tournament/View/482476\n---------------------------------------------------\nscénario 2\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nsunset win a mat - potentiellement drop ou concede la dernière game\nhttps://melee.gg/Tournament/View/482475\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476\n---------------------------------------------------\nscénario 3\nnova win a box\nhttps://melee.gg/Tournament/View/482472\n\nchroming up sealed - potentiellement drop ou concede après la première/1eme game\nhttps://melee.gg/Tournament/View/482482\n\nflatlined revival\nhttps://melee.gg/Tournament/View/482476",
       "date": "2027-01-30",
       "pinned": true
     },
@@ -14,7 +14,7 @@
       "id": "mwlgwz5te51o",
       "type": "text",
       "title": "Main event - day 2 fail / streetkid dimanche",
-      "content": "scénario 1\nGORO TAKEMURA OPEN 1\nhttps://melee.gg/Tournament/View/482469\n\nscénario 2\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME pour sunset win a mat\nhttps://melee.gg/Tournament/View/482469\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473\n\nscénario 3\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME 4\nhttps://melee.gg/Tournament/View/482469\n\nFlatlined Revival (2/2) - DROP OU CONCEED dernière GAME\nhttps://melee.gg/Tournament/View/482478\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473",
+      "content": "scénario 1\nGORO TAKEMURA OPEN 1\nhttps://melee.gg/Tournament/View/482469\n---------------------------------------------------\nscénario 2\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME pour sunset win a mat\nhttps://melee.gg/Tournament/View/482469\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473\n---------------------------------------------------\nscénario 3\nGORO TAKEMURA OPEN 1 - DROP OU CONCEED GAME 4\nhttps://melee.gg/Tournament/View/482469\n\nFlatlined Revival (2/2) - DROP OU CONCEED dernière GAME\nhttps://melee.gg/Tournament/View/482478\n\nSunset Win-A-Mat (2/2)\nhttps://melee.gg/Tournament/View/482473",
       "date": "2027-01-31",
       "pinned": false
     }
@@ -141,6 +141,28 @@
           "color": "#b7b7b7"
         }
       ]
+    },
+    {
+      "id": "mwlzh0v9of2m",
+      "events": [
+        {
+          "id": "mwlzvpbhep47",
+          "title": "AFTER LIFE MIXER - CONSTRUCTED",
+          "details": "15€ - Min Eddies 700/ Max 700",
+          "date": "2027-01-30",
+          "start": "11:00",
+          "end": "14:00",
+          "url": "",
+          "color": ""
+        }
+      ],
+      "name": "EOR VARSOVIE SAMEDI",
+      "startDate": "2027-01-30",
+      "endDate": "2027-01-30",
+      "dayStart": "09:00",
+      "dayEnd": "20:00",
+      "timeFormat": "24h",
+      "note": ""
     }
   ]
 }
